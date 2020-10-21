@@ -1,7 +1,7 @@
 /*
  * Matthew Pan
  * 40135588
- * Assignment 2 Version 2: Queue Breath-First Search Algorithm board game
+ * Assignment 2 Version 2: Queue Breadth-First Search Algorithm board game
  * Comp 352
  * Dr. Nora Houari
  * Oct. 17, 2020
@@ -17,7 +17,7 @@ import java.util.Scanner;
  * This class represents a board game in which you must reach the goal case (0 value). The number of 
  * possible movements for each step are restricted to the integers contained in each case.
  * 
- * This program utilizes a Breath-First Search algorithm to make sure each randomly generated board
+ * This program utilizes a Breadth-First Search algorithm to make sure each randomly generated board
  * has at least one possible path to reach the goal case before the game starts.
  * 
  * @author Matthew Pan
