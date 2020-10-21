@@ -1,3 +1,11 @@
+/*
+s * Matthew Pan
+ * 40135588
+ * Assignment 1 Version 1: Recursive method for binary strings
+ * Comp 352
+ * Dr. Nora Houari
+ * Sept. 18, 2020
+ */
 package A1;
 
 import java.io.FileWriter;
@@ -15,7 +23,7 @@ public class RecursiveBStrings {
 	 * @param str the input binary string
 	 * @param i indicates the index of the char we're looking at inside the given string
 	 */
-	static void RevealStr(StringBuilder str, int i) {
+	public static void RevealStr(StringBuilder str, int i) {
 		//base case: prints each possibility when reached
 		try(PrintWriter out = new PrintWriter(new FileWriter("out.txt", true))){
 			if(str.length() == i) {
@@ -52,6 +60,9 @@ public class RecursiveBStrings {
 		Random rand = new Random();
 		int binaryNb = rand.nextInt(64);
 		StringBuilder test = new StringBuilder(Integer.toBinaryString(binaryNb));
+		
+		StringBuilder demo = new StringBuilder("0*0**0**0000");
+		RevealStr(demo, 0);
 		
 		//displaying the permutations of the binary string with incrementing wild cards
 		//also writing the output to a text file

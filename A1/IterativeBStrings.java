@@ -1,3 +1,11 @@
+/*
+ * Matthew Pan
+ * 40135588
+ * Assignment 1 Version 1: Iterative method for binary strings
+ * Comp 352
+ * Dr. Nora Houari
+ * Sept. 18, 2020
+ */
 package A1;
 
 import java.io.FileWriter;
@@ -15,7 +23,7 @@ public class IterativeBStrings {
 	 * 
 	 * @param s the input binary string
 	 */
-	static void RevealStr(StringBuilder s) {
+	public static void RevealStr(StringBuilder s) {
 		//stack to store the binary strings
 		Stack<StringBuilder> strStack = new Stack<StringBuilder>();
 		strStack.push(s);
@@ -55,6 +63,9 @@ public class IterativeBStrings {
 		Random rand = new Random();
 		int binaryNb = rand.nextInt(64);
 		StringBuilder test = new StringBuilder(Integer.toBinaryString(binaryNb));
+		
+//		StringBuilder demo = new StringBuilder("0*0*0*0*");
+//		RevealStr(demo);
 		
 		//displaying the permutations of the binary string with incrementing wild cards
 		//also writing the output to a text file
