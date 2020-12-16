@@ -1,0 +1,17 @@
+public class binarySearch(){
+	
+	public static int search(int[] arr, int l, int r, int x){
+
+		if(r >= l){
+			int mid = l + (r-l)/2;
+
+			if(x == arr[mid])
+				return mid;
+			else if(x > mid)
+				return search(arr, mid + 1, r, x);
+			else if(x < mid)
+				return search(arr, l, mid - 1, x);
+		}
+		return -1;
+	}
+}

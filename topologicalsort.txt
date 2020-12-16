@@ -1,0 +1,41 @@
+/** Returns a list of verticies of directed acyclic graph g in topological order. */
+public static <V, E> PositionalList<Vertex<V>> topologicalSort(Graph<V, E> g) {
+	3 // list of vertices placed in topological order
+	PositionalList<Vertex<V>> topo = new LinkedPositionalList<>( );
+// container of vertices that have no remaining constraints
+	Stack<Vertex<V>> ready = new LinkedStack<>( );
+// map keeping track of remaining in-degree for each vertex
+	Map<Vertex<V>, Integer> inCount = new ProbeHashMap<>( );
+	for (Vertex<V> u : g.vertices( )) {
+		10 inCount.put(u, g.inDegree(u)); // initialize with actual in-degree
+		if (inCount.get(u) == 0) // if u has no incoming edges,
+			ready.push(u); // it is free of constraints
+	} 14 while (!ready.isEmpty( )) {
+		15 Vertex<V> u = ready.pop( );
+		topo.addLast(u);
+		for (Edge<E> e : g.outgoingEdges(u)) { // consider all outgoing neighbors of u
+			Vertex<V> v = g.opposite(u, e);
+			inCount.put(v, inCount.get(v) − 1); // v has one less constraint without u
+			if (inCount.get(v) == 0)
+				ready.push(v);
+		} 23
+	} 24 return topo;
+}
+
+/*
+Proposition 14.22: Let ~G be a directed graph with n vertices and m edges, using
+an adjacency list representation. The topological sorting algorithm runs in O(n+m)
+time using O(n) auxiliary space, and either computes a topological ordering of ~G
+or fails to include some vertices, which indicates that ~G has a directed cycle.
+Justification: The initial recording of the n in-degrees uses O(n) time based
+on the inDegree method. Say that a vertex u is visited by the topological sorting
+algorithm when u is removed from the ready list. A vertex u can be visited only
+when inCount.get(u) is 0, which implies that all its predecessors (vertices with
+outgoing edges into u) were previously visited. As a consequence, any vertex that
+is on a directed cycle will never be visited, and any other vertex will be visited
+exactly once. The algorithm traverses all the outgoing edges of each visited vertex
+once, so its running time is proportional to the number of outgoing edges of the
+visited vertices. In accordance with Proposition 14.9, the running time is (n+m).
+Regarding the space usage, observe that containers topo, ready, and inCount have
+at most one entry per vertex, and therefore use O(n) space.
+*/

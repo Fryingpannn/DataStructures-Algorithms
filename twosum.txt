@@ -1,0 +1,19 @@
+public class TwoSum{
+	
+	public static int[] twoSum(int[] arr, int target){
+
+		Map<Integer, Integer> sum = new HashMap<Integer, Integer>();
+
+		for(int i = 0; i < arr.length; i++){
+		
+			int complement = target - arr[i];
+
+			if(sum.containsKey(complement))
+				return new int[]{sum.get(complement), i};
+
+			sum.put(arr[i], i);
+		}
+
+		return null;
+	}
+}

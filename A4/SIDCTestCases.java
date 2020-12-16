@@ -60,16 +60,16 @@ public class SIDCTestCases {
 			System.out.println("[AVL Tree]");
 			IntelligentSIDC test = new IntelligentSIDC(60000);
 			test.add(11111112, 1);
-			test.add(11111118, 1);
 			test.add(30000000, 10);
 			test.add(30000001, 10);
-			test.add(30000002, 10);
 			test.add(30000003, 70);
+			test.add(11111118, 1);
+			test.add(30000002, 10);
 			test.add(99999999, 1);  //TESTING REMOVE()
 			test.remove(99999999);
 			test.print();
 			System.out.println("\nnextKey(30000001): " + test.nextKey(30000001));
-			System.out.println("prevKey(30000001): " + test.prevKey(30000003));
+			System.out.println("prevKey(30000003): " + test.prevKey(30000003));
 			System.out.println("getValue(30000003): " + test.getValue(30000003));
 			System.out.println("rangeKey(30000000, 30000003): " + test.rangeKey(30000000, 30000003));
 			//displaying allKeys()

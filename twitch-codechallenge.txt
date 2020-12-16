@@ -1,0 +1,70 @@
+import java.io.*;
+import java.util.*;
+
+//java regex (pattern, matcher), hashmap
+
+class Solution {
+  public static String[] solution(int min_cheermote_amount, String[] valid_cheermotes, String messages) {
+    //array containing all messages sent by user
+    String[] msgs = messages.split(",");
+    int amount;
+    boolean invalidMsg = false;
+    HashMap<String, Integer> list = new HashMap<String, Integer>();
+    
+    
+    for(int i = 0; i < msgs.length; i++){
+      for(int j = 0; j < valid_cheermotes.length; j++){
+        Pattern pattern = Pattern.compile(valid_cheermotes[j] + "\\d{1,}", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(msgs[i]);
+        
+        while(matcher.find()){
+          //represents the matched string
+          String found = matcher.group();
+          //the cheermote amount of the string
+          amount = Integer.parseInt(found.replaceAll("[^0-9]+",""));
+          //validate
+          if(amount > 10000 || amount < min_cheermote_amount){
+            invalidMsg = true;
+            break;
+          }
+          else{
+            //put valid cheermote and amount in hashmap /////////HERE NULLPOINTER EXCEPTION!!! FKKKKK
+            if(list.get(valid_cheermotes([j]) != null))
+              list.put(valid_cheermotes[j], list.get(valid_cheermotes[j]) + amount);
+            else
+              list.put(valid_cheermotes[j], amount);
+          }
+        }
+        //if one invalid emote, check next message
+        if(invalidMsg == true)
+          break;
+      }
+    }
+    
+    ArrayList<String> answers = new ArrayList<String>();
+    
+//     Collection<String> keys = list.keySet();
+//     Collection<Integer> values = list.values();
+//     Iterator<String> keyI = keys.iterator();
+//     Iterator<Integer> valueI = values.iterator();
+   
+//     while (keyI.hasNext()) {
+//       String pair = keyI.next().toString() + valueI.next().toString();
+//       answers[inc] = pair;
+//       inc++;
+//     }
+    
+    for(Map.Entry<String, Integer> entry : list.entrySet()) {
+      String key = entry.getKey();
+      int tab = entry.getValue();
+      answers.add(key + tab);
+    }
+    if(answers.isEmpty())
+      answers.add("NO_CHEERS");
+    
+    String[] finalAns = new String[answers.size()];
+    answers.toArray(finalAns);
+    
+    return finalAns;
+  }
+}

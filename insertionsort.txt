@@ -1,0 +1,28 @@
+public class InsertionSorting{
+	
+public static void insertionSort(int[] arr, int n){
+	
+	for(int i = 1; i < n; i++){
+
+		int key = arr[i];
+		int l = i - 1;
+
+		while(l >= 0 && arr[l] > key){
+			arr[l+1] = arr[l];
+			l--;
+		}
+		arr[l+1] = key;
+	}
+}
+
+public static void main(String[] args){
+	int[] arr = {1, 2, 3, 7, 6};
+
+	insertionSort(arr, arr.length);
+
+	for(int a : arr){
+		System.out.println(a);
+	}
+}
+
+}

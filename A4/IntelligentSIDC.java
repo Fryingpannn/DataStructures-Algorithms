@@ -381,7 +381,6 @@ public class IntelligentSIDC {
 			for(Student i : list)
 				System.out.println(i);
 		}
-		System.out.println(" - Size: " + size);
 	}
 	
 	//displays which ds is being used
