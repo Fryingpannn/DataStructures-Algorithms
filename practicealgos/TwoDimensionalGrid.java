@@ -17,7 +17,7 @@ public class TwoDimensionalGrid {
 			}	
 		}
 		
-		System.out.println("Row with max number of 1s: " + row);
+		System.out.println("Row with max number of 1s: " + (row + 1));
 		System.out.println("Number of 1s in this row: " + (n - j - 1));
 		
 	}
@@ -36,10 +36,18 @@ public class TwoDimensionalGrid {
 		
 		int arr[][] = {{0, 0, 0, 1},  
                 {0, 0, 0, 1},  
-                {0, 0, 0, 0},  
+                {0, 1, 1, 1},  
                 {0, 1, 1, 1}}; 
 		
 		findMaxRow(arr);
+		
+		System.out.println();
+		
+		for(int row = 0; row < arr.length; row++) {
+			for(int col = 0; col < arr[row].length; col++)
+				System.out.print(arr[row][col] + " ");
+			System.out.println();
+		}
 		
 		
 	}

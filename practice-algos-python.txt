@@ -1,0 +1,281 @@
+# Coin change ============================================================================
+
+    # Summary: 
+    #       - initialize a list of size amount + 1 to store the minimum qty amounts
+    #       - for every coin, for every amount (represented by each index of list), store the minimum in that index between what's already there and list[that index value - coin] + 1
+    #       - each index in the list will represent the least number of coins necessary to reach that index value.
+    #       - return list[amount]
+    def coinChange(self, coins: [int], amount: int) -> int:
+        # function header describes variables + their type. (var : type)
+        # -> int indicates return type
+        
+        # Bottom-up approach, recurrence relation: finding the minimum coins
+        # needed for every value up till the final amount.
+        
+        # key points:
+        # - the minimum qty of coins needed for a given (amount value) is equal to the minimum qty of coins needed for (amount value - C) + 1, where C is the last coin added to equal the amount value. This makes sense since you are taking off one coin to the amount value, this means that if you add this coin, it will take 1 more total qty of coins.       
+        # - thus, we need to find the minimum qty of coins for each incremental amount leading up to the amount value we are looking for by comparing the minimum qty of coins that could be obtained from each C in the list.
+        
+        # more intuition: say your amount = 11, and coins = [1,2,5]. Then if your "last coin" is 1, then the remaining amount occupied by the other X number of coins is 10. You can then check what the minimum amount of coins is needed to obtain 10, etc. until the smallest coin value, and then repeat this process for coin '2' and '5'. (In the code, we do this the other way around, starting from the smallest coin value)
+        
+###################################### CODE BELOW ######################################
+
+        # creating a list to store the number of coins needed for each incremental amount
+        # float('inf') is a python code to indicate big value. The list will be of size amount+1 filled with 'inf'. The 'inf' will be replaced with smallest qty needed for each amount value. The amount value is indicated by the index of the elements in the list. It goes up to amount + 1 since we must account for the 0 index (amount+1's index nb = amount)
+        dp = [float('inf')] * (amount + 1)
+        dp[0] = 0
+        
+        # for each coin as last coin picked, find the minimum qty of coins needed for each amount value (which is indicated by index)
+        # for loop over coins first so that we don't have to deal with negatives since x>=coin is guaranteed in the second loop.
+        for coin in coins: 
+            for x in range(coin, amount + 1):
+                dp[x] = min(dp[x], dp[x - coin] + 1)
+                
+        return dp[amount] if dp[amount] != float('inf') else -1
+
+
+# Linked List Cycle: determining if there is a cycle
+
+# slower: change the value in each node, if re-encounter it, return true
+def hasCycle(self, head: ListNode) -> bool:
+    if head is None:
+        return False
+    temp = header           
+    while temp.next is not None:
+        if temp.val == float('inf'):
+            return True
+        temp.val = float('inf')
+        temp = temp.next
+    return False
+
+# faster: use two pointers to race each other, one jumps faster so will loop around if cycle exists.
+def hasCycle(self, head: ListNode) -> bool:
+    if head is None:
+        return False
+    
+    # two pointers
+    ptr1 = head
+    ptr2 = head.next
+    
+    while ptr2.next is not None and ptr2.next.next is not None:
+        if ptr1 == ptr2:
+            return True
+        ptr1 = ptr1.next
+        ptr2 = ptr2.next.next
+    return False
+
+# REVERSE LINKED LIST =====================================
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+# version 1: changing values not actual nodes, using stack O(n)
+def reverseList(self, head: ListNode) -> ListNode:
+    if head is None:
+        return head
+    
+    stack = []
+    temp = head
+    temp2 = head
+    
+    while temp is not None:
+        stack.append(temp.val)
+        temp = temp.next
+    
+    while head is not None:
+        head.val = stack.pop()
+        head = head.next
+    
+    return temp2
+
+# version 2 iterative: changing node positions. O(n) time and O(1) space
+def reverseList(self, head: ListNode) -> ListNode:
+    # Summary: retrieve each element in the list one by one from left to right and link them to each other in a 'separate list' to invert 
+    #           the list nodes order.
+    
+    # -keep track of 'prev' element which always points to the head of the reversed list
+    # -almost as if we are making a separate list. the 'prev' starts at null since it's the last element of the inverted list. 
+    # -we update 'prev' each time by linking to it the next element in the list, then setting 'prev' to this new element as it's now 
+    #  the head of inverted list.
+    # -while doing this, we use 'temp' to store the reference to the rest of the list, and curr = temp moves the pointers forward.
+    
+    curr = head
+    prev = None
+    while curr is not None:
+        temp = curr.next
+        curr.next = prev
+        prev = curr
+        curr = temp # -> curr = curr.next
+    return prev
+
+# version 2 recursive: start from the end and link each node to it's previous one. think of it as the nodes at the end are already
+#                      reversed so now how do you reverse the n-1 linkage.
+def reverseList(self, head: ListNode) -> ListNode:
+    if head is None or head.next is None:
+        return head
+    
+    newHead = self.reverseList(head.next) # don't forget "self" since func not defined yet
+    head.next.next = head # linking next node to previous! pointer manipulation
+    head.next = None
+    return newHead
+
+
+# MERGE TWO SORTED LIST ============================================================
+
+# similar to merge sort: compare the elements from the two list and link the smallest to the new linked list node.
+#  -> must advance the pointers in the first list, second list and also resulting list.
+def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+head = ListNode() # new linked list (head will be placeholder, actually starts at head.next)
+temp = head 
+
+# iterate until one of the two list is done
+while l1 is not None and l2 is not None:
+    if l1.val < l2.val:
+        temp.next = l1 # ok to set directly because l1 already moved from previous iteration
+        l1 = l1.next # increment 1st list pointer
+    else:
+        temp.next = l2
+        l2 = l2.next # increment 2nd list pointer
+    temp = temp.next #increment result list pointer
+
+# attach the remainder list
+temp.next = l1 if l1 is not None else l2
+return head.next
+
+# BUY AND SELL STOCK ===================================================================
+
+# brute force: O(n^2)
+# iterate over array, for each element, check the other ones
+# if the next element is larger than element AND larger than previous, store this value
+# at the end of each iteration, compute maximum profit for that var, (0 if negative)
+# return max profit
+def maxProfit(self, prices: List[int]) -> int:
+    maxProfit = 0
+    max = 0
+    # for each value, update max 'sell' value, then compare profit with previous
+    for i in range(0, len(prices)):
+        for j in range(i+1, len(prices)):
+            if prices[j] > prices[i] and prices[j] > max:
+                max = prices[j]
+        # if profit greater than previous, update
+        if maxProfit < max - prices[i]:
+            maxProfit = max - prices[i]
+        max = 0
+        
+    return maxProfit if maxProfit > 0 else 0
+
+# One-Pass: Keep track of minimum buy value & max profit, equivalent
+#           to the smallest valley followed by the max peak. O(n)
+
+# key: sell must be after buy, so previous elements don't matter if they didn't work
+
+# Since only the sell must be after buy, we can directly iterate over and store the 
+# minimum buy value. If the value after it is smaller, than we can directly update.
+# If the value after is greater, then we can directly compute new maxProfit and see if
+# it's greater than the previous one. (If a given value Y has not provided us with
+# a max profit up until the value X, and X is smaller than Y, then we can simply give
+# up on Y and check for max profit with X for the rest of the array.)
+def maxProfit(self, prices: List[int]) -> int:
+    maxProfit = 0
+    minValue = float('inf')
+    for price in prices:
+        if price < minValue:
+            minValue = price
+        elif maxProfit < price - minValue:
+            maxProfit = price - minValue
+    return maxProfit
+
+# RANGE SUM QUERY - IMMUTABLE ==================================================================
+# function to get sum of values in given range repetitively.
+class NumArray:
+    
+    # If the sumRange function is used repetitively on similar ranges, we would have to
+    # re-compute same values multiple times. Instead, we can use prefix sum to cache the
+    # sums up till a given index, and simply subtract to return the sum in a given range.
+    def __init__(self, nums: List[int]):
+        self.numArray = nums
+        # compute prefix sum
+        for i in range(1, len(nums)):
+            self.numArray[i] = nums[i] + nums[i-1]
+
+    def sumRange(self, i: int, j: int) -> int:
+        if i == 0:
+            return self.numArray[j]
+        else:
+            return self.numArray[j] - self.numArray[i-1]
+        
+# Your NumArray object will be instantiated and called as such:
+# obj = NumArray(nums)
+# param_1 = obj.sumRange(i,j)
+
+# PALINDROME ===========================================
+
+# fastest
+def isPalindrome(self, s: str) -> bool:
+    if s == "":
+        return True
+    st = "".join(char for char in s if char.isalnum()).lower()
+    # indexes the string, -1 indicates reverse [start:end:step]
+    # st[::-1] returns the reversed string. fastest because no external 
+    # function calls, directly uses slicing which is highly optimized.
+    return st == st[::-1]
+
+# slower
+def isPalindrome(self, s: str) -> bool:
+    if s == "":
+        return True
+    
+    # strip the string of non-alpha chars
+    strg = re.sub("[^a-z0-9]", "", s.lower())
+        if strg[i] != strg[len(strg)-1-i]:
+            return False
+    return True
+
+# MERGE INTERVALS ================================================
+
+# need to create a separate 'merged' list to return.
+
+# sort the intervals by their first element.
+# once sorted, the intervals which need to be merged will be contiguous.
+# then we can simply check if the next interval's first element is bigger or not.
+# if bigger, simply add to list, if smaller or equal, merge!
+def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+    # sort the intervals by 1st element:
+    intervals.sort(key=lambda x: x[0])
+    
+    # merged intervals result list
+    merged = [intervals[0]]
+    
+    # check if next interval's starting element is larger or not
+    for interval in intervals:
+        # if larger, no need to merge, so simply add to resulting list
+        if interval[0] > merged[-1][1]:
+            merged.append(interval)
+        # if smaller or equal, then merge with the one already in resulting list
+        else:
+            merged[-1][1] = max(merged[-1][1], interval[1])
+    return merged
+
+# MAXIMUM SUBARRAY ==================================================
+
+def maxSubArray(self, nums: List[int]) -> int:
+# sliding window (find negative nb)
+# if positive = keep adding
+# 3 scenarios:
+#   1. max subarray sum is the value currently stored in maxSum
+#   2. max subarray includes the new found negative nb (counter += nb)
+#   3. max subarray is the one which comes after the new found negative nb (counter = 0)
+
+# if negative = reset a counter to 0, since there may be a bigger subarray but only
+# after the negative nb OR with the negative number
+# keep track of the max sum so far as well as the sum from after the negative nb.
+maxSum, counter = nums[0], 0
+
+for nb in nums:
+    if counter < 0:
+        counter = 0
+    counter += nb
+    maxSum = max(maxSum, counter)
+return maxSum

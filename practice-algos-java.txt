@@ -1,0 +1,603 @@
+/* MANY ALGORITHMS */
+
+/* REARRANGE ODD AND EVEN ====================================================*/
+
+//separate even numbers to the front, and odd numbers to the bac,
+public static int[] rearrange(int[] arr){  //[0,1,2,5]
+	if(arr == null || arr.length == 0)
+		return arr;
+	
+	// set a pointer which only moves if an even number is found,
+	// once an odd number is found, then an even number is found after,
+	// this will then point to the earliest odd number to swap.	
+	int ptr = -1; 
+	for(int i = 0; i < arr.length; i++){
+		if(arr[i] % 2 == 0){
+			ptr++;
+			swap(arr, i, ptr);
+		}
+	}
+	return arr;
+}
+
+private static void swap(int[] arr, int i, int ptr){
+	int temp = arr[i];
+	arr[i] = ptr;
+	arr[ptr] = temp;
+}
+
+
+/* INSERTION SORT  ===============================================================*/
+
+public static void insertionSort(int[] arr){
+	if(arr == null || arr.length <= 0) 
+		return;
+
+	for(int i = 1; i < arr.length; i++){
+
+		int pivot = arr[i];
+		int ptr = i-1;
+
+		// for every element before the pivot that is greater than it,
+		// move those element forward one case until a smaller element than
+		// the pivot is found, then put the pivot just after it.
+		while(ptr >= 0 && pivot < arr[ptr]){
+			arr[ptr + 1] = arr[ptr];
+			ptr--;
+		}
+		arr[ptr+1] = pivot;
+	}
+}
+
+//pivot difference
+// insertion sort pivot: if more than pivot, keep looping back to move elements forward
+// quick sort pivot: if less than pivot, swap with ptr
+
+/* QUICK SORT ===============================================================*/
+
+/*
+ Quick sort recursively partitions the array into two parts. During the partition,
+ a pivot is chosen, and elements smaller and greater than it are separated, with the
+ pivot then in the middle. The index of this pivot is then used to recursively partition
+ the left and right of it again until array is sorted.
+
+ The expected/best case is O(nlogn) when the pivot chosen is near the middle of the array. This
+ means that each partition will be approximately halving the array, the structure will look
+ like a binary tree where each level will have a total of n iterations since no more elements
+ are added nor deleted. The total number of levels will be logn if the pivot chosen is the middle
+ value.
+
+ Worst case is O(n^2) when the pivot chosen is always the largest or smallest value. This means
+ the binary recursion tree will have n levels since the array is not being halved each time. This
+ is also the case when the array is already sorted, almost sorted, or if a lot of elements repeat.
+
+ Stable: no.
+*/
+public static int[] quickSort(int[] arr, int l, int r){
+	if(l >= r)
+		return arr;
+
+	int p = partition(arr, l, r);
+
+	quickSort(arr, l, p-1);
+	quickSort(arr, p+1, r);
+}
+
+static int partition(int[] arr, int l, int r){
+		//for random pivot:
+		/*
+		 * Random rand = new Random();
+		 * int randPivot = rand.nextInt(r-l) + l;
+		 * swap(arr, randPivot, r);
+		 * */
+	int pivot = arr[r];
+	int ptr = l - 1; // one less than left index
+
+	for(l; l < r; l++){
+		if(arr[l] < pivot){
+			ptr++;
+
+			int temp = arr[l];
+			arr[l] = arr[ptr];
+			arr[ptr] = temp;
+		}
+	}
+	int temp = arr[ptr+1];
+	arr[ptr+1] = arr[r];
+	arr[r] = temp;
+
+	return ptr+1;
+}
+
+
+/* MERGE SORT ===============================================================*/
+
+/*
+O(nlogn) always: Since it's always splitting from the middle and calling each half
+recursively. The recursion tree will have logn levels with n computations 
+per level from copyOfRange and merge().
+
+O(n) Space complexity since creating new arrays that total the n elements.
+
+Stable: yes.
+*/
+public static void mergeSort(int[] arr){
+	int n = arr.size();
+	// finish separations once only one left in each array
+	if(n < 2) return;
+
+	// get middle index
+	int mid = n/2;
+
+	// separate in two
+	int[] left = Arrays.copyOfRange(arr, 0, mid);
+	int[] right = Arrays.copyOfRange(arr, mid, n);
+
+	// recursively merge sort the new arrays
+	mergeSort(left);
+	mergeSort(right);
+
+	merge(left, right, arr);
+}
+
+static void merge(int[] left, int[] right, int[] arr){
+	// i represents nb of elements copied from left, j from right
+	int i = 0; 
+	int j = 0;
+
+	// add from left array in 3 cases:
+	// 1. right array finished adding completely
+	// 2. left array latest element is smaller than right array
+	while(i + j < arr.length){
+		if(j == right.length || (i < left.length && left[i] < right[j]))
+			arr[i+j] = left[i++];
+		else
+			arr[i+j] = right[j++];
+	}
+}
+
+/* TWO SUM ===============================================================*/
+
+public static int[] twoSum(int[] nums, int target){
+	// essentially a search operation: we are trying to find
+	// the number "target - i" inside of the array nums.
+	// use hashmap to enable O(1) 'contains' operation.
+
+    HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+
+	for(int i = 0; i < nums.length; i++){
+		if(map.containsKey(target-nums[i]))
+			return new int[]{map.get(target-nums[i]), i};
+        map.put(nums[i], i);	// put operation has to be after check:
+	}							// prevents the number to pick itself for sum
+	return null;
+}
+
+/* 1512. Number of Good Pairs ===============================================================*/
+// good pair -> if nums[i] == nums[j] and i < j
+
+	//brute force method
+    public int numIdenticalPairs(int[] nums) {
+        int count = 0;
+        for(int i = 0; i < nums.length; i++){
+            for(int j = i+1; j < nums.length; j++){
+                if(nums[i] == nums[j] && i < j)
+                    count++;
+            }
+        }
+        return count;
+    }
+
+    // O(n): in this question, we are seeing if a same number
+    // appears more than once. Thus, we can make use of hashmap's contains().
+    // Number of good pairs = n*(n-1)/2 where n is the number of times 
+    // the given number repeats in the array.
+    public int numIdenticalPairs(int[] nums) {
+        int res = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int i: nums) {
+            if(map.containsKey(i)) {
+                res+=map.get(i);
+                map.put(i, map.get(i)+1);
+            } else {
+                map.put(i, 1);
+            }
+        }
+        return res;
+    } 
+
+/*
+Question: Find row number of a binary matrix having maximum number of 1s===========================
+
+Given a binary matrix (containing only 0 and 1) of order n*n. 
+All rows are sorted already, We need to find the row number with 
+maximum number of 1s. Also find number of 1 in that row.
+Note: in case of tie, print smaller row number.
+*/
+
+// INFO WE HAVE:
+/*
+	- the matrix is sorted, so leftmost 1 is the last one.
+	- store number of 1s in the row traversed
+
+	- brute force O(n^2): traversing matrix and counting number of 1s in each row,
+					update max, then return max.
+
+	- optimized way: 
+
+		* know leftmost 1 is last one
+		* stop iterating once leftmost 1 is reached
+		* go down a row in the same index, check if it's a 1
+		* if not, keep going down, until last row reached.
+*/
+
+/*
+Loop through the rows while keeping column variable separate since it decrements
+only a maximum of n times. Decrement column and store row while case is a 1.
+*/
+public static int maxNbOfOnes(int[][] arr){
+	int col = arr.length[]-1;
+	int nbRow;
+	for(int i = 0; i < arr.length; i++){
+		while(col >= 0 && arr[i][col] == 1){
+			nbRow = i;
+			col--; // will be at an index further, thus need to -1 when printing.
+		}		   // this also prevents same row updates.
+		System.out.println("Count: " + arr.length - col - 1);
+		System.out.println("Row nb: " + nbRow+1);
+	}
+}
+
+
+//Printing frequency of each character just after its consecutive occurrences ========================
+/*
+Given a string in such a way that every character occurs in a repeated manner.
+Your task is to print the string by inserting the frequency of each unique character
+after it and also eliminating all repeated characters.
+*/
+
+/*
+ * Possible edge cases:
+ * - at the beginning
+ * - at the end
+ * - when no consecutive
+ * - when all consecutive
+ */
+
+/*
+ * Complexity:
+ * - Iterating through str: O(n)
+ * - Checking character + appending: O(1)
+ * - Total: O(n)
+ * */
+
+//StringBuilder: more efficient than string for append and removal operations.
+//               It makes the string mutable so that it doesn't need to create
+//               new one every time.
+public static StringBuilder frequencyChar(String str){ 
+	if(str.length() == 0)
+		return new StringBuilder("0");
+
+	StringBuilder result = new StringBuilder();
+	int count = 1;
+	/*
+	 * We iterate over the string and check for consecutive with i and i-1.
+	 * If a consecutive char is found, we increment count and append it to
+	 * the result at the next non-consecutive char found. Since the appending
+	 * only happens at the next different character, we also add an if statement
+	 * to append directly the last character once it has been reached.
+	 */
+	for(int i = 1; i < str.length(); i++){
+		if(str.charAt(i-1) == str.charAt(i)) {
+			count++;
+		}
+		else{
+			result.append(str.charAt(i-1) + Integer.toString(count));
+			count = 1;
+		}
+	}
+	//if end of string, directly append
+	result.append(str.charAt(i) + Integer.toString(count));
+	return result;
+}
+
+
+/* NUMBER OF ISLANDS ================================================================
+
+/*
+RECAP:
+	- Loop over each element in 2D matrix
+	- Increment counter if it's a 1, then DFS over the element
+	- During DFS, convert each visited 1 to 0.
+	- O(n^2m^2)
+
+
+- find number of isolated 1s in the 2d matrix
+- 1 island = numbers of 1s surrounded by 0s vert/hori
+- must traverse 2d matrix and check if it's a 1, and if yes, check surrounding
+
+- island: 2 cases where we increment
+   1. 1 surrounded by 0s
+   2. 1 surrounded by at least one 1
+     --> for case 2, to prevent duplicates, convert visited 1s to 0
+ideas:
+- loop over matrix to find islands, dfs on each case to find all connected 1s
+- to mark visited spots, turn 1 into 0
+
+Total --> O(n^2m^2)
+*/
+public int numIslands(char[][] grid) {
+    int count = 0;
+    for(int i = 0; i < grid.length; i++){ //looping through matrix O(mn)
+        for(int j = 0; j < grid[i].length; j++){
+            if(grid[i][j] == '1'){
+                count++;
+                dfs(grid, i, j);
+            }
+        }
+    }
+    return count;
+}
+
+public void dfs(char[][] grid, int i, int j){ //dfs to find all connected 1s O(mn)
+    if(i < 0 || i > grid.length-1 || j < 0 || j > grid[i].length-1 
+       || grid[i][j] == '0') //check all conditions
+        return;
+    
+    grid[i][j] = '0';
+    
+    // check top
+    dfs(grid, i-1, j);
+    // check down
+    dfs(grid, i+1, j);
+    // check left
+    dfs(grid, i, j-1);
+    // check right
+    dfs(grid, i, j+1);
+}
+
+
+//FIBONACCI SEQ ==========================
+// return nth fib number
+// ** Fibonacci sequence starts with 0 index (F0)
+
+//iterative method O(n) time and O(1) space
+public int fib(int n){
+	if(n == 0)
+		return 0;
+	if(n == 1)
+		return 1;
+
+	int a = 0, b = 1, c;
+	for(int i = 2; i <= n; i++){ //less than or EQUAL
+		c = a + b;
+		a = b; // a becomes n-1th number
+		b = c; // b become nth number
+	}
+	return b;
+}
+
+//dynamic programming method O(n) time O(n) space
+public int fib(int n){
+	if(n == 0)
+		return 0;
+
+	// dp array
+	int[] arr = new int[n+1]; //+1 to account for 0 index
+
+	// first two nbs
+	arr[0] = 0;
+	arr[1] = 1;
+
+	// store the fibonacci sequence
+	for(int i = 2; i <= n; i++){
+		arr[i] = arr[i-1] + arr[i-2];
+	}
+	return arr[n];
+}
+
+// normal recursion method O(2^n) time and O(n) space
+public int fib(int n){
+	if(n <= 1)
+		return n;
+
+	return fib(n-1) + fib(n-2);
+}
+
+
+// COIN CHANGE =====================================================================
+/*
+thought process
+	- think of problem as to reach the amount, we can subtract it by a coin, and then find the minimum amount of coins needed for this lower value.
+	  etc, as a recurrence relation.
+	- draw tree, seems like there will be repeated possiblities -> DP
+	- draw array/list and indicate indices as amounts, then inside cases as the min qty needed for each amount
+	- then code... "for each coin in coins..."
+*/
+
+ // # Summary: (Check python code) (in-depth explanation = youtube guy)
+ //    #       - initialize a list of size amount + 1 to store the minimum qty amounts
+ //    #       - for every coin, for every amount (represented by each index of list), store the minimum in that index between what's already 
+ //				there and list[that index value - coin] + 1
+ //    #       - each index in the list will represent the least number of coins necessary to reach that index value.
+ //    #       - return list[amount]
+
+      /* # function header describes variables + their type. (var : type)
+      //   # -> int indicates return type
+        
+      //   # Bottom-up approach, recurrence relation: finding the minimum coins
+      //   # needed for every value up till the final amount.
+        
+           # key points:
+           # - the minimum qty of coins needed for a given (amount value) is equal to the minimum qty of coins needed for (amount value - C) + 1,
+       			where C is the last coin added to equal the amount value. This makes sense since you are taking off one coin to the amount value, this means
+        		that if you add this coin, it will take 1 more total qty of coins.       
+           # - thus, we need to find the minimum qty of coins for each incremental amount leading up to the amount value we are looking for by
+      		 comparing the minimum qty of coins that could be obtained from each C in the list.
+           # more intuition: say your amount = 11, and coins = [1,2,5]. Then if your "last coin" is 1, then the remaining amount occupied by the
+       		other X number of coins is 10. You can then check what the minimum amount of coins is needed to obtain 10, etc. until the smallest coin value,
+        	and then repeat this process for coin '2' and '5'. (In the code, we do this the other way around, starting from the smallest coin value)
+
+*/
+public int coinChange(int[] coins, int amount) {
+    int max = amount + 1;
+    int[] dp = new int[max];
+    Arrays.fill(dp, max);
+    dp[0] = 0;
+    
+    for(int i = 0; i < coins.length; i++){
+        for(int j = coins[i]; j < max; j++){
+            dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1);
+        }
+    }
+    int result = dp[amount] > amount ? -1 : dp[amount];
+    return result;
+}
+
+// Linked List Cycle: determining if there is a cycle
+
+// brute force #1: change the value in each node, if re-encounter it, return true
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+// brute force #2: put each node (reference) in hashset, if duplicate, means cycle exists.
+//  ** ---> comparing references to detect inequalities!!
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        if(head == null || head.next == null)
+            return false;
+        HashSet<ListNode> set = new HashSet<ListNode>();
+        
+        ListNode temp = head;
+        while(temp.next != null){
+            if(set.contains(temp))
+                return true;
+            set.add(temp);
+            temp = temp.next;
+        }
+        return false;
+    }
+
+ public boolean hasCycle(ListNode head) {
+        if (head == null) {
+            return false;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (slow != fast) {
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return true;
+    }
+
+// REVERSE A LINKED LIST ====================================================
+
+// version 1 iterative: changing node positions. O(n) time and O(1) space
+
+// # Summary: retrieve each element in the list one by one from left to right and link them to each other in a 'separate list' to invert 
+// #           the list nodes order.
+
+// # -keep track of 'prev' element which always points to the head of the reversed list
+// # -almost as if we are making a separate list. the 'prev' starts at null since it's the last element of the inverted list. 
+// # -we update 'prev' each time by linking to it the next element in the list, then setting 'prev' to this new element as it's now 
+// #  the head of inverted list.
+// # -while doing this, we use 'temp' to store the reference to the rest of the list, and curr = temp moves the pointers forward.
+public static Node reverseList(Node head){
+	Node prev = null; // head of the inverted list, starts at null since last element is null
+	Node temp = null;
+	while(head != null){
+		temp = head.next; // store the remainder of the list before taking away the first element
+		head.next = prev; // link the new element to beginning of inverted list
+		prev = head; // update new head of inverted list
+		head = temp; // update next new element to add to inverted list
+	}
+	return prev;
+}
+
+// # version 2 recursive: start from the end and link each node to it's previous one. think of it as the nodes at the end are already
+// #                      reversed so now how do you reverse the n-1 linkage. O(n) time and space
+public ListNode reverseList(ListNode head) {
+    if (head == null || head.next == null) return head;
+    ListNode p = reverseList(head.next);
+    head.next.next = head;
+    head.next = null;
+    return p;
+}
+
+public ListNode mergeTwoList(ListNode l1, ListNOde l2){
+	// resulting list
+	ListNode head = new ListNode();
+	temp = head;
+
+	// iterate over both lists
+	while(l1 != null && l2 != null){
+		if(l1.val < l2.val){
+			temp.next = l1;
+			l1 = l1.next // increment list 1
+		}
+		else{
+			temp.next = l2;
+			l2 = l2.next; // increment list 2
+		}
+		temp = temp.next; // increment resulting list
+	}
+	// attach remainder
+	temp.next = l1 == null ? l2 : l1;
+	return head.next;
+}
+
+// BUY AND SELL STOCK ========================================================
+
+// # One-Pass: Keep track of minimum buy value & max profit, equivalent
+// #           to the smallest valley followed by the max peak. O(n)
+
+// # key: sell must be after buy, so previous elements don't matter if they didn't work
+
+// # Since only the sell must be after buy, we can directly iterate over and store the 
+// # minimum buy value. If the value after it is smaller, than we can directly update.
+// # If the value after is greater, then we can directly compute new maxProfit and see if
+// # it's greater than the previous one. (If a given value Y has not provided us with
+// # a max profit up until the value X, and X is smaller than Y, then we can simply give
+// # up on Y and check for max profit with X for the rest of the array.)
+
+public int maxProfit(int[] prices) {
+    int maxProfit = 0;
+    int minVal = Integer.MAX_VALUE; // min buy value
+    for(int i = 0; i < prices.length; i++){
+        minVal = Math.min(minVal, prices[i]); // update min
+        maxProfit = Math.max(maxProfit, prices[i] - minVal); // update max profit
+    }
+    return maxProfit;
+}
+
+// MERGE INTERVALS ===================================================
+
+public int[][] merge(int[][] intervals) {
+    // sort intervals
+    Arrays.sort(intervals, (a,b) -> a[0] - b[0]); //lambda function
+    
+    // resulting list
+    LinkedList<int[]> list = new LinkedList<int[]>();
+    
+    // compare and merge
+    for(int[] arr : intervals){
+        if(list.isEmpty() || list.getLast()[1] < arr[0])
+            list.add(arr);
+        else
+            list.getLast()[1] = Math.max(list.getLast()[1], arr[1]);
+    }
+    return list.toArray(new int[list.size()][]); 
+}

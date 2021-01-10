@@ -54,11 +54,11 @@ public class SortingAlgos {
 
 		int i = l - 1; // this is the index that indicates the last element that is smaller than the pivot
 		
-		for(int j = l; j < p; j++) { //j is the index that indicates the last element that is larger than the pivot
+		for(; l < p; l++) { //j is the index that indicates the last element that is larger than the pivot
 			
-			if(arr[j] < pivot) {	//switch the values at i and j if a smaller value than pivot found (separate small & large)
+			if(arr[l] < pivot) {	//switch the values at i and j if a smaller value than pivot found (separate small & large)
 				i++;				//to make it reverse order, simply put  < pivot
-				swap(arr, i, j);
+				swap(arr, i, l);
 			}
 		}
 		

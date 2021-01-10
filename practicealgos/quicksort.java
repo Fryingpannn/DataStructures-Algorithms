@@ -15,6 +15,7 @@ public class QuickSort{
 		//Random rand = new Random();
 
 		//int pivot = rand.nextInt(r - l) + l;
+		//swap(arr, pivot, r)
 		int pivot = arr[r];
 		int i = l-1; //keeps track of the last smallest element
 
