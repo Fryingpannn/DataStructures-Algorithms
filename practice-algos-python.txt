@@ -205,7 +205,7 @@ class NumArray:
             return self.numArray[j]
         else:
             return self.numArray[j] - self.numArray[i-1]
-        
+
 # Your NumArray object will be instantiated and called as such:
 # obj = NumArray(nums)
 # param_1 = obj.sumRange(i,j)
@@ -279,3 +279,522 @@ for nb in nums:
     counter += nb
     maxSum = max(maxSum, counter)
 return maxSum
+
+# CISCO ASSESSMENT =====================================================
+
+# Q1:
+matrix = []
+
+size = int(raw_input())
+for i in range(0, size):
+    # this splits a string into list of nbs, then converts all nbs into integers.
+    nbs = map(int, str(raw_input()).split())
+    matrix.append(nbs)
+
+# this rotates matrix by 90 degrees clockwise
+matrix = list(list(x)[::-1] for x in zip(*matrix))
+
+for i in range(0, size):
+    for j in range(0, size):
+        print matrix[i][j],
+    print 
+
+# Q2: 3D MATRIX IN PYTHON
+size = int(input())
+# row starting with white and black
+wRow = []
+bRow = []
+for i in range(0,size):
+    wRow.append("W" if i % 2 == 0 else "B")
+    bRow.append("W" if (i+1) % 2 == 0 else "B")
+
+# board
+board = []
+count = 0
+for i in range(0, size):
+    if count % 2 == 0:
+        board.append(wRow)
+    else:
+        board.append(bRow)
+    count += 1
+
+# Print
+for i in range(0, len(board)):
+    for j in range(0, len(board[i])):
+        print(board[i][j], end=" ")
+    print()
+
+# FLIPPING MATRIX
+
+def rotate_90_degree_anticlckwise(matrix):
+    new_matrix = []
+    for i in range(len(matrix[0]), 0, -1):
+        new_matrix.append(list(map(lambda x: x[i-1], matrix)))
+
+    return new_matrix
+
+
+def rotate_90_degree_clckwise(matrix):
+    new_matrix = []
+    for i in range(len(matrix[0])):
+        li = list(map(lambda x: x[i], matrix))
+        li.reverse()
+        new_matrix.append(li)
+
+    return new_matrix
+
+def rotate_90_degree_clckwise_by_zip_method(matrix):
+    return list(list(x)[::-1] for x in zip(*matrix))
+
+# https://treyhunner.com/2018/10/asterisks-in-python-what-they-are-and-how-to-use-them/
+
+# Check if nb is odd or even BITWISE OPERATOR
+
+if nb & 1:
+    return 'odd'
+else:
+    return 'even'
+
+
+# email regex
+if re.search("^[a-zA-Z0-9_.]+@[a-z-]+\.com|net|org$", word):
+    print("true")
+else:
+    print("false")
+
+
+def numDuplicates(name, price, weight):
+    # Write your code here
+    
+    dict = {}
+    count = 0
+    for (n, p, w) in zip(name, price, weight):
+        if (n, p, w) in dict:
+            count += 1
+        dict[(n, p, w)] = 1
+    return count
+
+# TRAPPING RAIN WATER =======================================================
+ """
+- Squarepoint Capital
+
+[Brute force O(n^2)]
+For each element in list:
+- find the max left and right pillar height
+- take the minimum of the two
+- from that minimum, minus the height of the current spot. 
+This will give you the nb of raindrops in the current spot.
+Don't forget to discard negatives when incrementing the total output.
+"""
+def trap(self, height: List[int]) -> int:
+    if not height:
+        return 0
+    counter = 0
+    max_left = height[0]
+    max_right = height[len(height)-1]
+    
+    # iterate over each spot
+    for i in range(1, len(height)-1):
+        # check max left pillar height
+        for l in range(1, i):
+            if height[l] > max_left:
+                max_left = height[l]
+        # check max right pillar height
+        for r in range(i+1, len(height)-1):
+            if height[r] > max_right:
+                max_right = height[r]
+        # get current spot raindrop nb
+        add = min(max_left, max_right) - height[i]
+        if add > 0:
+            counter += add
+        max_left = height[0]
+        max_right = height[len(height)-1]
+    return counter
+
+# Make The String Great ==================================
+""" 
+- also got brute force method with recursion 2 pass on leetcode.
+- use stack instead to check last index element.
+"""
+
+def makeGood(self, s: str) -> str:
+    stack = []
+
+    for ch in s:
+        if stack and stack[-1] == ch.swapcase():
+            stack.pop()
+        else:
+            stack.append(ch)
+    return "".join(stack)
+
+# MAX DEPTH OF BINARY TREE
+
+def maxDepth(self, root: TreeNode) -> int:
+    if root is None:
+        return 0
+    
+    left = self.maxDepth(root.left) + 1
+    right = self.maxDepth(root.right) + 1
+    return max(left,right)
+
+# MISSING NUMBER IN ARRAY
+
+def missingNumber(self, nums: List[int]) -> int:
+    sum = ((len(nums)-1)*((len(nums)-1)+1))/2
+    count = 0
+    for i in nums:
+        count += i
+    return int(count - sum + 1)
+
+# VALIDATE BINARY SEARCH TREE
+
+def isValidBST(self, root: TreeNode) -> bool:
+    if root is None:
+        return True
+    bst = []
+    self.inorder(root, bst)
+    return all(bst[i] > bst[i-1] for i in range(1, len(bst)))
+    
+def inorder(self, root, bst):
+    if root is None:
+        return
+    self.inorder(root.left, bst)
+    bst.append(root.val)
+    self.inorder(root.right, bst)
+
+# LOWEST COMMON ANCESTOR BINARY SEARCH TREE
+
+def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+    if root is None:
+        return root
+    if p.val < root.val and q.val < root.val:
+        return self.lowestCommonAncestor(root.left, p, q)
+    if p.val > root.val and q.val > root.val:
+        return self.lowestCommonAncestor(root.right, p, q)
+    return root
+
+# 211 DESIGN ADD AND SEARCH WORDS DATA STRUCTURE
+"""
+You used a dictionary and a set. The optimal solution requires a Trie.
+
+Trie: tree with each node containing a hashmap<Character, Node> and a boolean. Each node links to another node until word is finished.
+"""
+class WordDictionary:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        # Used dictionary to append: (length of word, [list of word of this length])
+        self.data = {}
+        # Used set to checked if word already added.
+        self._set = set()
+        
+    # Time complexity: O(1)
+    def addWord(self, word: str) -> None:
+        if word in self._set or not word.isalpha() or any(x.isupper() for x in word):
+            return
+        if len(word) not in self.data: 
+            self.data[len(word)] = [word]
+        else:
+            self.data[len(word)].append(word)
+        self._set.add(word)
+        
+    # Time complexity: O(d*w) -> where d is number of dots in word and w number of words of same length.
+    # -> Looping through word of same length
+    def search(self, word: str) -> bool:
+        if any(x.isupper() for x in word) or len(word) not in self.data:
+            return False
+        if "." in word:
+            word_list = self.data[len(word)]
+            for w in word_list:
+                if re.search("^" + word + "$", w):
+                    return True
+        else:
+            return True if word in self._set else False
+        return False
+
+# SYMMETRIC TREE
+
+def isSymmetric(self, root: TreeNode) -> bool:
+    if root is None:
+        return True
+    
+    return self.isMirror(root.left, root.right)
+
+def isMirror(self, left, right):
+    if left is None and right is None:
+        return True
+    if left is None or right is None:
+        return False
+    if left.val != right.val:
+        return False
+    
+    return self.isMirror(left.left, right.right) and self.isMirror(left.right, right.left) 
+
+# kTH SMALLEST ELEMENT IN A BST
+
+def kthSmallest(self, root: TreeNode, k: int) -> int:
+    if root is None:
+        return -1
+
+    def inorder(root, arr):
+        if root is None:
+            return
+        inorder(root.left, arr)
+        arr.append(root.val)
+        inorder(root.right, arr)
+        
+    arr = []
+    inorder(root, arr)
+    return arr[k-1]    
+
+# MINIMUM DEPTH OF A BINARY TREE
+
+# O(n), faster if use if statements and prevent calls for Nones
+# must use both max and min, in case of linked list type trees (if
+# only one sided.)
+def minDepth(self, root: TreeNode) -> int:
+    if root is None:
+        return 0
+    
+    if None in [root.left, root.right]:
+        return max(self.minDepth(root.left), self.minDepth(root.right)) + 1
+    else:
+        return min(self.minDepth(root.left), self.minDepth(root.right)) + 1
+
+# BINARY TREE RIGHT SIDE VIEW
+
+"""
+Getting the right most value of each level of the tree.
+
+- Use a dictionary to store the depth as the key and the
+value as the value in each node.
+- Use pre-order traversal, so that the value for each depth updates
+towards the right, and the most right nodes are the ones staying at the end.
+The nodes which have higher depth will not be overwritten and will stay when
+converting dictionary to list.
+"""
+def rightSideView(self, root: TreeNode) -> List[int]:
+    right = {}
+    def see_right(root, d):
+        if root is None:
+            return
+        right[d] = root.val
+        
+        see_right(root.left, d + 1)
+        see_right(root.right, d + 1)
+    
+    see_right(root, 0)
+    return right.values()
+
+# BFS implementation
+"""
+Remember the dequeue stack.. pop from the start (left) so that it's
+BFS! Pop from the top of stack so that it's DFS.
+"""
+def rightSideView(self, root):
+    if root is None:
+        return []
+    
+    # create dequeue to allow O(1) from both ends 
+    deq = collections.deque()
+    deq.append(root)
+    result = []
+    
+    while deq:
+        size, val = len(deq), 0
+        
+        for i in range(size):
+            # pop left since BFS
+            node = deq.popleft()
+            
+            if node.left:
+                deq.append(node.left)
+            if node.right:
+                deq.append(node.right)
+                
+            val = node.val
+        
+        result.append(val)
+    return result
+
+# RANGE SUM QUERY
+
+class NumArray:
+    """
+    Initialize an additional array to hold blocks of size sqrt(n), where n is size of original list.
+    These blocks would be the sums of those sqrt(n) nb of elements. We would then use these blocks
+    to perform range sum queries to avoid having to iterate over each element to sum. O(sqrt(n))
+    
+    - Keep in mind we still need original array to perform sums on the two blocks on the end, since
+    the picked index range could be a number in the middle of the block.
+    """
+    def __init__(self, nums: List[int]):
+        # nums: original array
+        # blocks_len: total length of blocks array
+        # blocks: blocks array
+        self.nums = nums
+        block_size = math.sqrt(len(nums))
+        self.blocks_len = int(math.ceil(len(nums) / block_size))
+        self.blocks = [0] * self.blocks_len
+        for i in range(len(nums)):
+            self.blocks[i // self.blocks_len] += nums[i]
+    
+    """
+    - Update block array value
+    - Update original array value
+    """
+    def update(self, index: int, val: int) -> None:
+        block_index = index // self.blocks_len
+        self.blocks[block_index] = self.blocks[block_index] - self.nums[index] + val
+        self.nums[index] = val
+        
+    
+    """
+    2 scenarios:
+    - If in same block
+    - If in different blocks
+    """
+    def sumRange(self, left: int, right: int) -> int:
+        start_block = left // self.blocks_len
+        end_block = right // self.blocks_len
+        sum = 0
+        
+        if start_block == end_block:
+            # means the indices are contained inside one block, just iterate and add.
+            for i in range(left, right +1):
+                sum += self.nums[i]
+        else:
+            # for left-most block. Convert the block index to the actual index!
+            for i in range(left, (start_block + 1) * self.blocks_len):
+                sum += self.nums[i]
+            # for blocks in between
+            for i in range(start_block + 1, end_block):
+                sum += self.blocks[i]
+            # for right-most block
+            for i in range(end_block * self.blocks_len, right +1):
+                sum += self.nums[i]
+        return sum
+
+# AVERAGE LEVEL BINARY TREE
+
+def averageOfLevels(self, root: TreeNode) -> List[float]:
+    if root is None:
+        return
+    
+    yeet = []
+    que = collections.deque()
+    que.append(root)
+    sum = 0
+    
+    while que:
+        size = len(que)
+        for i in range(size):
+            node = que.popleft()
+            sum += node.val
+            if node.left:
+                que.append(node.left)
+            if node.right:
+                que.append(node.right)
+            
+        yeet.append(sum / size)
+        sum = 0
+    
+    return yeet
+
+# MEDIUM: ROTTING ORANGES
+
+    """
+    BFS
+    - The minimum number of minutes needed to rot all oranges is essentially the number of
+      iterations needed to obtain the shortest path between the starting point and the 
+      furthest away fresh orange.
+    - It's why this can be computed with both DFS and BFS.
+    - With BFS, we can find the number of iterations for the shortest path simply by incrementing.
+    - With DFS, we can find this minimum number by finding the max depth of recursion of the search.
+    """
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        """
+        - Find the rotten oranges and place their indices in a queue.
+        - Find the number of fresh oranges.
+            - If there are none: finish.
+        - Else, start BFS with the queue of rotten orange indices.
+            - For each rotten orange, rot their neighbours.
+            - Can check if neighbouring indices are out of bounds with a coordinates array.
+            - Increment a count during each iteration.
+            - Finish if either all oranges are rotted or if nb of fresh oranges reaches 0.
+        """
+        if not grid:
+            return -1
+        
+        fresh_count = 0
+        # queue of rotten orange indices
+        que = collections.deque()
+        for i in range(len(grid)):
+            for k in range(len(grid[i])):
+                if grid[i][k] == 2:
+                    que.append((i,k))
+                elif grid[i][k] == 1:
+                    fresh_count += 1
+                
+        if fresh_count == 0:
+            return 0
+        
+        minutes = 0
+        # coordinates
+        check = [(-1, 0), (1, 0), (0, 1), (0, -1)]
+        # BFS
+        while que and fresh_count:
+            size = len(que)
+            minutes += 1
+            for i in range(size):
+                orange = que.popleft()
+                for coord in check:
+                    row = orange[0] + coord[0]
+                    col = orange[1] + coord[1]
+                    # if new index exists and is a fresh orange, rot it and put in queue
+                    if row >= 0 and row < len(grid) and col >= 0 and col < len(grid[row]) and grid[row][col] == 1:
+                        grid[row][col] = 2
+                        que.append((row, col))
+                        fresh_count -= 1
+        
+        return minutes if fresh_count == 0 else -1
+        
+# DFS
+"""
+Iterate through the matrix and dfs on each cell.
+Increment the minutes integer each time you dfs.
+The max depth of the dfs minus two is the minimum number of minutes needed.
+
+This works too because the depth of the DFS to an end is a "shortest path". This
+value will be the same as when doing BFS since their results both reflect the "shortest path".
+
+Time: O(M*N) -> Row * Columns. Each cell is traversed max two times.
+Space: O(M*N): if only one case is rotten at a corner and all else are fresh. Big recursion!
+"""
+def orangesRotting(self, grid: List[List[int]]) -> int:
+    for i in range(len(grid)):
+        for k in range(len(grid[i])):
+            if grid[i][k] == 2:
+                self.dfs(grid, i, k, 2)
+    
+    min = 2
+    for i in range(len(grid)):
+        for k in range(len(grid[i])):
+            if grid[i][k] == 1:
+                return -1
+            min = max(min, grid[i][k])
+    
+    return min-2
+    
+def dfs(self, grid, i, k, min):
+    # check if out of bounds indices, empty, or rotten by anohter
+    if i < 0 or k < 0 or i >= len(grid) or k >= len(grid[i]) or grid[i][k] == 0 or (grid[i][k] < min and grid[i][k] >= 2): 
+        return
+
+    grid[i][k] = min
+    self.dfs(grid, i+1, k, min+1)
+    self.dfs(grid, i-1, k, min+1)
+    self.dfs(grid, i, k+1, min+1)
+    self.dfs(grid, i, k-1, min+1) 

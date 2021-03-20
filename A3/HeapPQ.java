@@ -54,7 +54,7 @@ public class HeapPQ {
 		list.set(i, list.get(j));
 		list.set(j, temp);
 	}
-	
+
 	/**
 	 * Used after insertion: restores min-heap order by moving the new element up the heap until it is
 	 * after an element with same or higher priority.
